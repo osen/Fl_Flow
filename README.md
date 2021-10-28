@@ -38,7 +38,7 @@ command similar to:
 
 This would result in a window appearing with the following layout.
 
-![](doc/1_button_initial.png)
+![](doc/tutorial/1_button_initial.png)
 
 You will notice that by default the button will appear at the bottom
 right corner of the window if no positional instructions are given.
@@ -59,7 +59,7 @@ function via < > ^ v symbols. As the following image demonstrates,
 the button will keep moving upwards until it hits either the edge
 of the window or another positioned Widget.
 
-![](doc/2_button_up.png)
+![](doc/tutorial/2_button_up.png)
 
 With that in place, we can then instruct the Widget to move to the
 left. Rather than writing multiple statements in C, the command can
@@ -70,7 +70,7 @@ be collapsed as seen in the following code:
 So with this, the button will first move all the way to the top
 edge, and then all the way to the left edge as shown in the following:
 
-![](doc/3_button_up_left.png)
+![](doc/tutorial/3_button_up_left.png)
 
 With this in place, we will now create a new Text Box and provide
 it the same instructions to move up and left. This will place it
@@ -88,7 +88,7 @@ The following image shows the route that the Text Box will take.
 This should also be fairly easy to visualize compared to other
 approaches using many nested grid containers.
 
-![](doc/4_text_up_left.png)
+![](doc/tutorial/4_text_up_left.png)
 
 Next we are going to add a separator widget to close off the top
 row. For this we are going to do something slightly different.
@@ -108,14 +108,14 @@ So again, you may notice that any directional instruction with a =
 symbol before it will expand in that direction rather than simply
 move. This process is demonstrated by the following image.
 
-![](doc/5_separator_expand_left_up.png)
+![](doc/tutorial/5_separator_expand_left_up.png)
 
 Note that the Separator Widget is by default 1x1 pixels in size.
 This allows us to expand it in the vertical direction as well as
 horizontal. The final result of this can be seen in the following
 image.
 
-![](doc/6_separator_result.png)
+![](doc/tutorial/6_separator_result.png)
 
 At this point, our code should be similar to the following:
 
@@ -146,4 +146,104 @@ int main()
   return Fl::run();
 }
 ```
+## Advanced Ordering
+
+Next in this tutorial we will look further into the ways that
+ordering of the flow instructions can affect the layout and also
+provide useful results. We will add two new Widgets; a Text Area
+and another Separator. Ultimately we want all the remaining space
+to be taken up by the Text Area but for now we will only move it
+into the top left and not expand it just yet. As for the separator,
+we will use this to section off some button widgets but for now
+lets expand it horizontally and move it upwards. These tasks can
+be seen in the following code and subsequent image:
+
+```
+Fl_Multiline_Input area(0, 0, 10, 10);
+Fl_Box sep2(0, 0, 10, 1)
+sep2.color(FL_BLACK);
+sep2.box(FL_FLAT_BOX);
+flow.add(area, "<^");
+flow.add(sep2, "=<^");
+```
+
+![](doc/tutorial/7_textarea_expand_1.png)
+
+Now that we have the Separator and Text Area out of the way
+temporarily, we simply add a Button. Next we move the Separator
+down to rest ontop of the newly placed button. Finally with everything
+else in the correct positions, we expand the Text Area in both
+dimensions. These steps are detailed below:
+
+```
+Fl_Button button2(0, 0, 100, 30, "Button");
+flow.add(button2, "v");
+flow.add(sep2, "v");
+flow.add(area, "=>=v");
+```
+
+![](doc/tutorial/8_textarea_expand_2.png)
+
+As you may have noticed, the widget flow instructions can be specified
+multiple times and not only will they append to the current list
+but they will also be in sequence of any instructions on sibling
+Widgets. The final output can be seen in the following.
+
+![](doc/tutorial/9_textarea_expand_result.png)
+
+Importantly, all of the Widgets are placed using instructions rather
+than absolute coordinates which means if we later resize the top-level
+window, these instructions are repeated and the UI layout effectively
+scales. For example the layout we have created should scale as
+shown:
+
+![](doc/tutorial/10_resize.png)
+
+Finally a complete listing of the code required to create a program
+that provides this layout. This should be considerably simpler when
+compared with other UI systems.
+
+```
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Flow.H>
+#include <FL/Fl_Input.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Multiline_Input.H>
+
+int main()
+{
+  Fl_Double_Window win(640, 480);
+  Fl_Flow flow(0, 0, win.w(), win.h());
+  Fl_Button button(0, 0, 100, 30, "Button");
+  Fl_Input text(0, 0, 150, 30);
+  Fl_Box sep(0, 0, 10, 1);
+  Fl_Multiline_Input area(0, 0, 10, 10);
+  Fl_Box sep2(0, 0, 10, 1);
+  Fl_Button button2(0, 0, 100, 30, "Button");
+  sep.color(FL_BLACK);
+  sep.box(FL_FLAT_BOX);
+  sep2.color(FL_BLACK);
+  sep2.box(FL_FLAT_BOX);
+
+  flow.add(button, "^<");
+  flow.add(text, "^<");
+  flow.add(sep, "=<^");
+  flow.add(area, "<^");
+  flow.add(sep2, "=<^");
+  flow.add(button2, "v");
+  flow.add(sep2, "v");
+  flow.add(area, "=>=v");
+
+  win.resizable(flow);
+  win.show();
+
+  return Fl::run();
+}
+```
+Hopefully this tutorial has given you some insight into how Flow
+works. You may have even noticed that we did not actually need the
+Separator Widgets in order to achieve the layout we created. Your
+next step could be to have a look at some of the examples and finally
+to download the library and have a play.
 

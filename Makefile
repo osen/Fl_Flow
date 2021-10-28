@@ -14,9 +14,11 @@ all:
 	$(CXX) -osample $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/sample/*.cpp `fltk-config --ldflags`
 	$(CXX) -otutorial $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/tutorial/*.cpp `fltk-config --ldflags`
 	$(CXX) -ocenter $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/center/*.cpp `fltk-config --ldflags`
+	$(CXX) -oadvanced $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/advanced/*.cpp `fltk-config --ldflags`
 
 clean:
 	rm -f sample
 	rm -f tutorial
 	rm -f center
+	rm -f advanced
 	rm -r -f include

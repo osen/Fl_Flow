@@ -6,16 +6,22 @@ INCLUDES= \
   src/Fl_Flow/Fl_State.h \
   src/Fl_Flow/Fl_Flow.h
 
-CXXFLAGS=-Wall -std=c++98
+CXXFLAGS=-Wall -std=c++98 `fltk-config --cxxflags`
+LDFLAGS=`fltk-config --ldflags`
 CXX=c++
 
 all:
 	mkdir -p include/FL
-	cat $(INCLUDES) > include/FL/Fl_Flow.H
-	$(CXX) -osample $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/sample/*.cpp `fltk-config --ldflags`
-	$(CXX) -otutorial $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/tutorial/*.cpp `fltk-config --ldflags`
-	$(CXX) -ocenter $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/center/*.cpp `fltk-config --ldflags`
-	$(CXX) -oadvanced $(CXXFLAGS) `fltk-config --cxxflags` -Iinclude src/advanced/*.cpp `fltk-config --ldflags`
+
+	echo "#ifndef FL_FL_FLOW_H" > include/FL/Fl_Flow.H
+	echo "#define FL_FL_FLOW_H" >> include/FL/Fl_Flow.H
+	cat $(INCLUDES) >> include/FL/Fl_Flow.H
+	echo "#endif" >> include/FL/Fl_Flow.H
+
+	$(CXX) -osample $(CXXFLAGS) -Iinclude src/sample/*.cpp $(LDFLAGS)
+	$(CXX) -otutorial $(CXXFLAGS) -Iinclude src/tutorial/*.cpp $(LDFLAGS)
+	$(CXX) -ocenter $(CXXFLAGS) -Iinclude src/center/*.cpp $(LDFLAGS)
+	$(CXX) -oadvanced $(CXXFLAGS) -Iinclude src/advanced/*.cpp $(LDFLAGS)
 
 clean:
 	rm -f sample

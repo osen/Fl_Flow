@@ -1,3 +1,5 @@
+#ifndef FL_FL_FLOW_H
+#define FL_FL_FLOW_H
 #include <exception>
 #include <string>
 
@@ -549,3 +551,4 @@ private:
 
 #define Fl_Flow Fl_Flow<char>
 
+#endif

@@ -249,6 +249,7 @@ available space. For this, you can use the '/' character. For
 example, the following will horizontally and vertically center a
 button in the empty space rather than expanding into it.
 
+    Fl_Button button(0, 0, 200, 200, "Button");
     flow.rule(button, "/</^");
 
 This will result in the following:

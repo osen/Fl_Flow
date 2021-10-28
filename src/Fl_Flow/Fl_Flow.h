@@ -196,7 +196,7 @@ private:
       }
 
       bool found = false;
-      for(size_t ci = 0; ci < children(); ++ci)
+      for(int ci = 0; ci < children(); ++ci)
       {
         if(child(ci) == m_states.at(si).m_widget.widget())
         {
@@ -221,7 +221,7 @@ private:
       }
 
       bool found = false;
-      for(size_t ci = 0; ci < children(); ++ci)
+      for(int ci = 0; ci < children(); ++ci)
       {
         if(child(ci) == m_instructions.at(ii).m_widget.widget())
         {
@@ -238,7 +238,7 @@ private:
     /*
      * Add any missing children into the states
      */
-    for(size_t ci = 0; ci < children(); ++ci)
+    for(int ci = 0; ci < children(); ++ci)
     {
       bool found = false;
       for(size_t si = 0; si < m_states.size(); ++si)

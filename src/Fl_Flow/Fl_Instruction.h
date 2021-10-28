@@ -1,7 +1,5 @@
 #include <FL/Fl.H>
 
-#include <exception>
-
 template <typename T>
 struct Fl_Instruction
 {
@@ -48,7 +46,7 @@ struct Fl_Instruction
       else if(c == 'v') return MOVE_DOWN;
     }
 
-    throw std::exception();
+    throw Fl_Exception("Invalid instruction");
   }
 
   Fl_Instruction() : m_widget(0), m_instruction() { }

@@ -1,6 +1,5 @@
 #include <FL/Fl_Group.H>
 
-#include <exception>
 #include <vector>
 #include <string>
 
@@ -118,7 +117,7 @@ private:
           }
           else
           {
-            throw std::exception();
+            throw Fl_Exception("Invalid instruction");
           }
 
           /*

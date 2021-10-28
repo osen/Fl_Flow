@@ -1,3 +1,25 @@
+#include <exception>
+#include <string>
+
+template <typename T>
+struct Fl_Exception
+{
+  Fl_Exception(const char* _message) : m_message(_message) { }
+  Fl_Exception(const std::string& _message) : m_message(_message) { }
+  virtual ~Fl_Exception() throw() {}
+
+  virtual const char* what() const throw()
+  {
+    return m_message.c_str();
+  }
+
+private:
+  std::string m_message;
+
+};
+
+#define Fl_Exception Fl_Exception<char>
+
 #include <FL/Fl.H>
 
 template <typename T>
@@ -156,8 +178,6 @@ struct Fl_Transform
 
 #include <FL/Fl.H>
 
-#include <exception>
-
 template <typename T>
 struct Fl_Instruction
 {
@@ -204,7 +224,7 @@ struct Fl_Instruction
       else if(c == 'v') return MOVE_DOWN;
     }
 
-    throw std::exception();
+    throw Fl_Exception("Invalid instruction");
   }
 
   Fl_Instruction() : m_widget(0), m_instruction() { }
@@ -256,7 +276,6 @@ struct Fl_State
 
 #include <FL/Fl_Group.H>
 
-#include <exception>
 #include <vector>
 #include <string>
 
@@ -374,7 +393,7 @@ private:
           }
           else
           {
-            throw std::exception();
+            throw Fl_Exception("Invalid instruction");
           }
 
           /*

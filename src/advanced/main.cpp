@@ -20,14 +20,14 @@ int main()
   sep2.color(FL_BLACK);
   sep2.box(FL_FLAT_BOX);
 
-  flow.add(button, "^<");
-  flow.add(text, "^<");
-  flow.add(sep, "=<^");
-  flow.add(area, "<^");
-  flow.add(sep2, "=<^");
-  flow.add(button2, "v");
-  flow.add(sep2, "v");
-  flow.add(area, "=>=v");
+  flow.rule(button, "^<");
+  flow.rule(text, "^<");
+  flow.rule(sep, "=<^");
+  flow.rule(area, "<^");
+  flow.rule(sep2, "=<^");
+  flow.rule(button2, "v");
+  flow.rule(sep2, "v");
+  flow.rule(area, "=>=v");
 
   win.resizable(flow);
   win.show();

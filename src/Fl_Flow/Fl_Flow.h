@@ -21,14 +21,16 @@ struct Fl_Flow : Fl_Group
     resize(x(), y(), w(), h());
   }
 
-  void add(Fl_Widget& _widget, const std::string& _instructions)
+  void rule(Fl_Widget& _widget, const std::string& _instructions)
   {
-    add(&_widget, _instructions);
+    rule(&_widget, _instructions);
   }
 
-  void add(Fl_Widget_Tracker _widget, const std::string& _instructions)
+  void rule(Fl_Widget_Tracker _widget, const std::string& _instructions)
   {
     int type = Fl_Instruction::NONE;
+
+    add(_widget.widget());
 
     for(size_t ci = 0; ci < _instructions.length(); ++ci)
     {

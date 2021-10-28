@@ -52,7 +52,7 @@ So as the window is resized, these same instructions get rerun and
 the window layout is regenerated (albeit at a different size). For
 now we just move up via the following code:
 
-    flow.add(button, "^");
+    flow.rule(button, "^");
 
 As you may have guessed, directions are given within the WidgetFlow
 function via < > ^ v symbols. As the following image demonstrates,
@@ -65,7 +65,7 @@ With that in place, we can then instruct the Widget to move to the
 left. Rather than writing multiple statements in C, the command can
 be collapsed as seen in the following code:
 
-    flow.add(button, "^<");
+    flow.rule(button, "^<");
 
 So with this, the button will first move all the way to the top
 edge, and then all the way to the left edge as shown in the following:
@@ -81,7 +81,7 @@ flexibility. The code for the Text Box should be as follows.
 
 ```
 Fl_Input text(0, 0, 150, 30);
-flow.add(text, "^<");
+flow.rule(text, "^<");
 ```
 
 The following image shows the route that the Text Box will take.
@@ -101,7 +101,7 @@ to move upwards is given.
 Fl_Box sep(0, 0, 1, 1);
 sep.color(FL_BLACK);
 sep.box(FL_FLAT_BOX);
-flow.add(sep, "=<^");
+flow.rule(sep, "=<^");
 ```
 
 So again, you may notice that any directional instruction with a =
@@ -136,9 +136,9 @@ int main()
   sep.color(FL_BLACK);
   sep.box(FL_FLAT_BOX);
  
-  flow.add(button, "^<");
-  flow.add(text, "^<");
-  flow.add(sep, "=<^");
+  flow.rule(button, "^<");
+  flow.rule(text, "^<");
+  flow.rule(sep, "=<^");
 
   win.resizable(flow);
   win.show();
@@ -163,8 +163,8 @@ Fl_Multiline_Input area(0, 0, 10, 10);
 Fl_Box sep2(0, 0, 10, 1)
 sep2.color(FL_BLACK);
 sep2.box(FL_FLAT_BOX);
-flow.add(area, "<^");
-flow.add(sep2, "=<^");
+flow.rule(area, "<^");
+flow.rule(sep2, "=<^");
 ```
 
 ![](doc/tutorial/7_textarea_expand_1.png)
@@ -177,9 +177,9 @@ dimensions. These steps are detailed below:
 
 ```
 Fl_Button button2(0, 0, 100, 30, "Button");
-flow.add(button2, "v");
-flow.add(sep2, "v");
-flow.add(area, "=>=v");
+flow.rule(button2, "v");
+flow.rule(sep2, "v");
+flow.rule(area, "=>=v");
 ```
 
 ![](doc/tutorial/8_textarea_expand_2.png)
@@ -226,14 +226,14 @@ int main()
   sep2.color(FL_BLACK);
   sep2.box(FL_FLAT_BOX);
 
-  flow.add(button, "^<");
-  flow.add(text, "^<");
-  flow.add(sep, "=<^");
-  flow.add(area, "<^");
-  flow.add(sep2, "=<^");
-  flow.add(button2, "v");
-  flow.add(sep2, "v");
-  flow.add(area, "=>=v");
+  flow.rule(button, "^<");
+  flow.rule(text, "^<");
+  flow.rule(sep, "=<^");
+  flow.rule(area, "<^");
+  flow.rule(sep2, "=<^");
+  flow.rule(button2, "v");
+  flow.rule(sep2, "v");
+  flow.rule(area, "=>=v");
 
   win.resizable(flow);
   win.show();
@@ -241,6 +241,28 @@ int main()
   return Fl::run();
 }
 ```
+
+## Advanced Ordering
+
+Flow also provides an instruction to center a component within
+available space. For this, you can use the '/' character. For
+example, the following will horizontally and vertically center a
+button in the empty space rather than expanding into it.
+
+    flow.rule(button, "/</^");
+
+This will result in the following:
+
+If you only wanted to center it horizontally but make it expand
+vertically instead, then you would need a rule such as this.
+
+    flow.rule(button, "/<=^");
+
+This is very powerful because by only centering in the available
+space, it will take into consideration other components such as
+side bars. Considering that you can also put Fl_Flow widgets into
+other Fl_Flow widgets, you can achieve any layout possible.
+
 Hopefully this tutorial has given you some insight into how Flow
 works. You may have even noticed that we did not actually need the
 Separator Widgets in order to achieve the layout we created. Your

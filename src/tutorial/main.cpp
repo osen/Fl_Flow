@@ -14,9 +14,9 @@ int main()
   sep.color(FL_BLACK);
   sep.box(FL_FLAT_BOX);
 
-  flow.add(button, "^<");
-  flow.add(text, "^<");
-  flow.add(sep, "=<^");
+  flow.rule(button, "^<");
+  flow.rule(text, "^<");
+  flow.rule(sep, "=<^");
 
   win.resizable(flow);
   win.show();

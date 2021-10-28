@@ -17,10 +17,10 @@ struct HelloWindow : Fl_Double_Window
     add_resizable(m_flow);
     m_flow.set_padding(10);
 
-    m_flow.add(m_load, "^<");
-    m_flow.add(m_save, "^<");
-    m_flow.add(m_close, "^");
-    m_flow.add(m_text, "=<=^");
+    m_flow.rule(m_load, "^<");
+    m_flow.rule(m_save, "^<");
+    m_flow.rule(m_close, "^");
+    m_flow.rule(m_text, "=<=^");
 
     end();
   }

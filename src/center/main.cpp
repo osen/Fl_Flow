@@ -12,8 +12,8 @@ int main()
   side.color(FL_RED);
   side.box(FL_FLAT_BOX);
 
-  flow.add(side, "<=^");
-  flow.add(button, "/</^");
+  flow.rule(side, "<=^");
+  flow.rule(button, "/</^");
 
   win.resizable(flow);
   win.show();

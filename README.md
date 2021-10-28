@@ -1,4 +1,7 @@
 # Fl_Flow
+
+![](doc/tutorial/logo.png)
+
 ## A fast and fun layout manager for FLTK
 
 Fl_Flow is a layout manager for FLTK which works in a largely

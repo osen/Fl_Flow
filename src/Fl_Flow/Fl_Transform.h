@@ -67,6 +67,12 @@ struct Fl_Transform
       m_cw - m_padding * 2, m_ch - m_padding * 2);
   }
 
+  void debug_output()
+  {
+    printf("Committed: %i %i %i %i\n", m_cx, m_cy, m_cw, m_ch);
+    printf("Staging: %i %i %i %i\n", m_x, m_y, m_w, m_h);
+  }
+
   void commit()
   {
     m_cx = m_x;
@@ -81,6 +87,14 @@ struct Fl_Transform
     m_y = m_cy;
     m_w = m_cw;
     m_h = m_ch;
+  }
+
+  void contract(int _w, int _h)
+  {
+    m_x += m_w / 2 - _w / 2;
+    m_y += m_h / 2 - _h / 2;
+    m_w = _w;
+    m_h = _h;
   }
 
   void translate(int _x, int _y)

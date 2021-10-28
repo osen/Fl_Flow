@@ -28,7 +28,7 @@ struct Fl_Flow : Fl_Group
 
   void add(Fl_Widget_Tracker _widget, const std::string& _instructions)
   {
-    bool expand = false;
+    int type = Fl_Instruction::NONE;
 
     for(size_t ci = 0; ci < _instructions.length(); ++ci)
     {
@@ -36,14 +36,19 @@ struct Fl_Flow : Fl_Group
 
       if(c == '=')
       {
-        expand = true;
+        type = Fl_Instruction::EXPAND;
+        continue;
+      }
+      else if(c == '/')
+      {
+        type = Fl_Instruction::CENTER;
         continue;
       }
 
       Fl_Instruction instruction;
       instruction.m_widget = _widget;
-      instruction.m_instruction = Fl_Instruction::decode(c, expand);
-      expand = false;
+      instruction.m_instruction = Fl_Instruction::decode(c, type);
+      type = Fl_Instruction::NONE;
       m_instructions.push_back(instruction);
     }
   }
@@ -75,12 +80,19 @@ private:
         i.m_instruction == Fl_Instruction::EXPAND_LEFT ||
         i.m_instruction == Fl_Instruction::EXPAND_RIGHT ||
         i.m_instruction == Fl_Instruction::EXPAND_UP ||
-        i.m_instruction == Fl_Instruction::EXPAND_DOWN)
+        i.m_instruction == Fl_Instruction::EXPAND_DOWN ||
+        i.m_instruction == Fl_Instruction::CENTER_LEFT ||
+        i.m_instruction == Fl_Instruction::CENTER_RIGHT ||
+        i.m_instruction == Fl_Instruction::CENTER_UP ||
+        i.m_instruction == Fl_Instruction::CENTER_DOWN)
       {
         int xDir = i.x_direction();
         int yDir = i.y_direction();
 
         Fl_Transform wt(i.m_widget, m_padding);
+
+        int origWidth = wt.m_w;
+        int origHeight = wt.m_h;
 
         while(true)
         {
@@ -94,7 +106,11 @@ private:
           else if(i.m_instruction == Fl_Instruction::EXPAND_LEFT ||
             i.m_instruction == Fl_Instruction::EXPAND_RIGHT ||
             i.m_instruction == Fl_Instruction::EXPAND_UP ||
-            i.m_instruction == Fl_Instruction::EXPAND_DOWN)
+            i.m_instruction == Fl_Instruction::EXPAND_DOWN ||
+            i.m_instruction == Fl_Instruction::CENTER_LEFT ||
+            i.m_instruction == Fl_Instruction::CENTER_RIGHT ||
+            i.m_instruction == Fl_Instruction::CENTER_UP ||
+            i.m_instruction == Fl_Instruction::CENTER_DOWN)
           {
             wt.scale(xDir, yDir);
           }
@@ -132,6 +148,21 @@ private:
           }
 
           if(colliding) break;
+        }
+
+        /*
+         * Transformed *just* too far, so rollback
+         */
+        wt.rollback();
+        //wt.debug_output();
+
+        if(i.m_instruction == Fl_Instruction::CENTER_LEFT ||
+          i.m_instruction == Fl_Instruction::CENTER_RIGHT ||
+          i.m_instruction == Fl_Instruction::CENTER_UP ||
+          i.m_instruction == Fl_Instruction::CENTER_DOWN)
+        {
+          wt.contract(origWidth, origHeight);
+          wt.commit();
         }
 
         wt.apply();

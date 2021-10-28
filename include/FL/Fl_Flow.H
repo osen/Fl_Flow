@@ -90,6 +90,12 @@ struct Fl_Transform
       m_cw - m_padding * 2, m_ch - m_padding * 2);
   }
 
+  void debug_output()
+  {
+    printf("Committed: %i %i %i %i\n", m_cx, m_cy, m_cw, m_ch);
+    printf("Staging: %i %i %i %i\n", m_x, m_y, m_w, m_h);
+  }
+
   void commit()
   {
     m_cx = m_x;
@@ -104,6 +110,14 @@ struct Fl_Transform
     m_y = m_cy;
     m_w = m_cw;
     m_h = m_ch;
+  }
+
+  void contract(int _w, int _h)
+  {
+    m_x += m_w / 2 - _w / 2;
+    m_y += m_h / 2 - _h / 2;
+    m_w = _w;
+    m_h = _h;
   }
 
   void translate(int _x, int _y)
@@ -147,6 +161,10 @@ struct Fl_Transform
 template <typename T>
 struct Fl_Instruction
 {
+  static const int NONE = 0;
+  static const int EXPAND = 50;
+  static const int CENTER = 60;
+
   static const int MOVE_LEFT = 1;
   static const int MOVE_RIGHT = 2;
   static const int MOVE_UP = 3;
@@ -157,20 +175,34 @@ struct Fl_Instruction
   static const int EXPAND_UP = 8;
   static const int EXPAND_DOWN = 9;
 
-  static int decode(char c, bool expand)
+  static const int CENTER_LEFT = 11;
+  static const int CENTER_RIGHT = 12;
+  static const int CENTER_UP = 13;
+  static const int CENTER_DOWN = 14;
+
+  static int decode(char c, int _type)
   {
-    if(expand)
+    if(_type == EXPAND)
     {
       if(c == '<') return EXPAND_LEFT;
       else if(c == '>') return EXPAND_RIGHT;
       else if(c == '^') return EXPAND_UP;
       else if(c == 'v') return EXPAND_DOWN;
     }
-
-    if(c == '<') return MOVE_LEFT;
-    else if(c == '>') return MOVE_RIGHT;
-    else if(c == '^') return MOVE_UP;
-    else if(c == 'v') return MOVE_DOWN;
+    else if(_type == CENTER)
+    {
+      if(c == '<') return CENTER_LEFT;
+      else if(c == '>') return CENTER_RIGHT;
+      else if(c == '^') return CENTER_UP;
+      else if(c == 'v') return CENTER_DOWN;
+    }
+    else if(_type == NONE)
+    {
+      if(c == '<') return MOVE_LEFT;
+      else if(c == '>') return MOVE_RIGHT;
+      else if(c == '^') return MOVE_UP;
+      else if(c == 'v') return MOVE_DOWN;
+    }
 
     throw std::exception();
   }
@@ -179,15 +211,25 @@ struct Fl_Instruction
 
   int x_direction()
   {
-    if(m_instruction == MOVE_LEFT || m_instruction == EXPAND_LEFT) return -1;
-    else if(m_instruction == MOVE_RIGHT || m_instruction == EXPAND_RIGHT) return 1;
+    if(m_instruction == MOVE_LEFT ||
+      m_instruction == EXPAND_LEFT ||
+      m_instruction == CENTER_LEFT) { return -1;}
+    else if(m_instruction == MOVE_RIGHT ||
+      m_instruction == EXPAND_RIGHT ||
+      m_instruction == CENTER_RIGHT) { return 1; }
+
     return 0;
   }
 
   int y_direction()
   {
-    if(m_instruction == MOVE_UP || m_instruction == EXPAND_UP) return -1;
-    else if(m_instruction == MOVE_DOWN || m_instruction == EXPAND_DOWN) return 1;
+    if(m_instruction == MOVE_UP ||
+      m_instruction == EXPAND_UP ||
+      m_instruction == CENTER_UP) { return -1; }
+    else if(m_instruction == MOVE_DOWN ||
+      m_instruction == EXPAND_DOWN ||
+      m_instruction == CENTER_DOWN) { return 1; }
+
     return 0;
   }
 
@@ -242,7 +284,7 @@ struct Fl_Flow : Fl_Group
 
   void add(Fl_Widget_Tracker _widget, const std::string& _instructions)
   {
-    bool expand = false;
+    int type = Fl_Instruction::NONE;
 
     for(size_t ci = 0; ci < _instructions.length(); ++ci)
     {
@@ -250,14 +292,19 @@ struct Fl_Flow : Fl_Group
 
       if(c == '=')
       {
-        expand = true;
+        type = Fl_Instruction::EXPAND;
+        continue;
+      }
+      else if(c == '/')
+      {
+        type = Fl_Instruction::CENTER;
         continue;
       }
 
       Fl_Instruction instruction;
       instruction.m_widget = _widget;
-      instruction.m_instruction = Fl_Instruction::decode(c, expand);
-      expand = false;
+      instruction.m_instruction = Fl_Instruction::decode(c, type);
+      type = Fl_Instruction::NONE;
       m_instructions.push_back(instruction);
     }
   }
@@ -289,12 +336,19 @@ private:
         i.m_instruction == Fl_Instruction::EXPAND_LEFT ||
         i.m_instruction == Fl_Instruction::EXPAND_RIGHT ||
         i.m_instruction == Fl_Instruction::EXPAND_UP ||
-        i.m_instruction == Fl_Instruction::EXPAND_DOWN)
+        i.m_instruction == Fl_Instruction::EXPAND_DOWN ||
+        i.m_instruction == Fl_Instruction::CENTER_LEFT ||
+        i.m_instruction == Fl_Instruction::CENTER_RIGHT ||
+        i.m_instruction == Fl_Instruction::CENTER_UP ||
+        i.m_instruction == Fl_Instruction::CENTER_DOWN)
       {
         int xDir = i.x_direction();
         int yDir = i.y_direction();
 
         Fl_Transform wt(i.m_widget, m_padding);
+
+        int origWidth = wt.m_w;
+        int origHeight = wt.m_h;
 
         while(true)
         {
@@ -308,7 +362,11 @@ private:
           else if(i.m_instruction == Fl_Instruction::EXPAND_LEFT ||
             i.m_instruction == Fl_Instruction::EXPAND_RIGHT ||
             i.m_instruction == Fl_Instruction::EXPAND_UP ||
-            i.m_instruction == Fl_Instruction::EXPAND_DOWN)
+            i.m_instruction == Fl_Instruction::EXPAND_DOWN ||
+            i.m_instruction == Fl_Instruction::CENTER_LEFT ||
+            i.m_instruction == Fl_Instruction::CENTER_RIGHT ||
+            i.m_instruction == Fl_Instruction::CENTER_UP ||
+            i.m_instruction == Fl_Instruction::CENTER_DOWN)
           {
             wt.scale(xDir, yDir);
           }
@@ -346,6 +404,21 @@ private:
           }
 
           if(colliding) break;
+        }
+
+        /*
+         * Transformed *just* too far, so rollback
+         */
+        wt.rollback();
+        //wt.debug_output();
+
+        if(i.m_instruction == Fl_Instruction::CENTER_LEFT ||
+          i.m_instruction == Fl_Instruction::CENTER_RIGHT ||
+          i.m_instruction == Fl_Instruction::CENTER_UP ||
+          i.m_instruction == Fl_Instruction::CENTER_DOWN)
+        {
+          wt.contract(origWidth, origHeight);
+          wt.commit();
         }
 
         wt.apply();

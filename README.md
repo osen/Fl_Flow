@@ -1,15 +1,18 @@
 # Fl_Flow
-A fast and fun layout manager for FLTK
+## A fast and fun layout manager for FLTK
 
-Fl_Flow is a fast and fun layout manager for FLTK which works in a
-largely different manner to existing systems you may have encountered
-so far. However it is intended to simplify the UI development process
+Fl_Flow is a layout manager for FLTK which works in a largely
+different manner to existing systems you may have encountered so
+far. However it is intended to simplify the UI development process
 and provide a much smoother workflow for both initial development
-as well as future maintenance. For now, lets have a look at how it
-works and what kinds of functionality it provides.
+as well as future maintenance.
 
-The first step is to create a minimal program displaying a single
-window with a button. This can be done using the following code:
+## Simple tutorial
+
+Lets have a look at how Fl_Flow works and what kinds of functionality
+it provides. The first step is to create a minimal program displaying
+a single window with a button. This can be done using the following
+code:
 
 ```
 #include <FL/Fl_Double_Window.H>

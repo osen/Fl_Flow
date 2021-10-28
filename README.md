@@ -253,6 +253,8 @@ button in the empty space rather than expanding into it.
 
 This will result in the following:
 
+![](doc/tutorial/11_center.png)
+
 If you only wanted to center it horizontally but make it expand
 vertically instead, then you would need a rule such as this.
 

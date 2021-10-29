@@ -285,7 +285,7 @@ template <typename T>
 struct Fl_Flow : Fl_Group
 {
   Fl_Flow(int _x = 0, int _y = 0, int _w = 128, int _h = 128, const char *_label = 0)
-    : Fl_Group(_x, _y, _w, _h, _label), m_padding(5)
+    : Fl_Group(_x, _y, _w, _h, _label), m_padding(5), m_drawn()
   {
     //box(FL_FLAT_BOX);
     //color(FL_RED);
@@ -332,6 +332,23 @@ struct Fl_Flow : Fl_Group
     }
   }
 
+  /*
+   * Ensure that widget layout has occurred at least once
+   * before initial draw
+   */
+  virtual void draw()
+  {
+    if(!m_drawn)
+    {
+      m_drawn = true;
+      //resize(x(), y(), w(), h());
+      prepare();
+      process();
+    }
+
+    Fl_Group::draw();
+  }
+
   virtual void resize(int _x, int _y, int _w, int _h)
   {
     Fl_Group::resize(_x, _y, _w, _h);
@@ -343,6 +360,7 @@ private:
   std::vector<Fl_Instruction> m_instructions;
   std::vector<Fl_State> m_states;
   int m_padding;
+  bool m_drawn;
 
   void process()
   {

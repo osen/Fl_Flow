@@ -149,7 +149,7 @@ int main()
   return Fl::run();
 }
 ```
-## Advanced Ordering
+## Advanced ordering
 
 Next in this tutorial we will look further into the ways that
 ordering of the flow instructions can affect the layout and also
@@ -245,7 +245,7 @@ int main()
 }
 ```
 
-## Advanced Ordering
+## Centering widgets
 
 Flow also provides an instruction to center a component within
 available space. For this, you can use the '/' character. For

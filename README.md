@@ -17,7 +17,7 @@ it provides. The first step is to create a minimal program displaying
 a single window with a button. This can be done using the following
 code:
 
-```
+```cpp
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
@@ -55,7 +55,9 @@ So as the window is resized, these same instructions get rerun and
 the window layout is regenerated (albeit at a different size). For
 now we just move up via the following code:
 
-    flow.rule(button, "^");
+```cpp
+flow.rule(button, "^");
+```
 
 As you may have guessed, directions are given within the WidgetFlow
 function via < > ^ v symbols. As the following image demonstrates,
@@ -68,7 +70,9 @@ With that in place, we can then instruct the Widget to move to the
 left. Rather than writing multiple statements in C, the command can
 be collapsed as seen in the following code:
 
-    flow.rule(button, "^<");
+```cpp
+flow.rule(button, "^<");
+```
 
 So with this, the button will first move all the way to the top
 edge, and then all the way to the left edge as shown in the following:
@@ -82,7 +86,7 @@ instructions and move it left first and then up, it will result in
 being placed under the original button. This provides useful
 flexibility. The code for the Text Box should be as follows.
 
-```
+```cpp
 Fl_Input text(0, 0, 150, 30);
 flow.rule(text, "^<");
 ```
@@ -100,7 +104,7 @@ Widget to expand left. this means it will keep growing towards the
 left until it touches the left edge. After this our usual instruction
 to move upwards is given.
 
-```
+```cpp
 Fl_Box sep(0, 0, 1, 1);
 sep.color(FL_BLACK);
 sep.box(FL_FLAT_BOX);
@@ -122,7 +126,7 @@ image.
 
 At this point, our code should be similar to the following:
 
-```
+```cpp
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
@@ -149,6 +153,7 @@ int main()
   return Fl::run();
 }
 ```
+
 ## Advanced ordering
 
 Next in this tutorial we will look further into the ways that
@@ -161,7 +166,7 @@ we will use this to section off some button widgets but for now
 lets expand it horizontally and move it upwards. These tasks can
 be seen in the following code and subsequent image:
 
-```
+```cpp
 Fl_Multiline_Input area(0, 0, 10, 10);
 Fl_Box sep2(0, 0, 10, 1)
 sep2.color(FL_BLACK);
@@ -178,7 +183,7 @@ down to rest ontop of the newly placed button. Finally with everything
 else in the correct positions, we expand the Text Area in both
 dimensions. These steps are detailed below:
 
-```
+```cpp
 Fl_Button button2(0, 0, 100, 30, "Button");
 flow.rule(button2, "v");
 flow.rule(sep2, "v");
@@ -206,7 +211,7 @@ Finally a complete listing of the code required to create a program
 that provides this layout. This should be considerably simpler when
 compared with other UI systems.
 
-```
+```cpp
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
@@ -252,8 +257,10 @@ available space. For this, you can use the '/' character. For
 example, the following will horizontally and vertically center a
 button in the empty space rather than expanding into it.
 
-    Fl_Button button(0, 0, 200, 200, "Button");
-    flow.rule(button, "/</^");
+```cpp
+Fl_Button button(0, 0, 200, 200, "Button");
+flow.rule(button, "/</^");
+```
 
 This will result in the following:
 
@@ -262,7 +269,9 @@ This will result in the following:
 If you only wanted to center it horizontally but make it expand
 vertically instead, then you would need a rule such as this.
 
-    flow.rule(button, "/<=^");
+```cpp
+flow.rule(button, "/<=^");
+```
 
 This is very powerful because by only centering in the available
 space, it will take into consideration other components such as

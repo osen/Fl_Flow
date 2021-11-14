@@ -23,6 +23,8 @@ private:
 #define Fl_Exception Fl_Exception<char>
 
 #include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Group.H>
 
 template <typename T>
 struct Fl_Helper

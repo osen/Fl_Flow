@@ -1,4 +1,6 @@
 #include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Group.H>
 
 template <typename T>
 struct Fl_Helper

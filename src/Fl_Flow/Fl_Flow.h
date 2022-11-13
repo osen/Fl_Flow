@@ -46,12 +46,114 @@ struct Fl_Flow : Fl_Group
         continue;
       }
 
-      Fl_Instruction instruction;
-      instruction.m_widget = _widget;
-      instruction.m_instruction = Fl_Instruction::decode(c, type);
+      add_instruction(_widget, Fl_Instruction::decode(c, type));
       type = Fl_Instruction::NONE;
-      m_instructions.push_back(instruction);
     }
+  }
+
+  Fl_Flow& center()
+  {
+    Fl_Instruction& last = m_instructions.back();
+
+    switch (last.m_instruction) {
+    case Fl_Instruction::MOVE_LEFT:
+      last.m_instruction = Fl_Instruction::CENTER_LEFT;
+      break;
+    case Fl_Instruction::MOVE_RIGHT:
+      last.m_instruction = Fl_Instruction::CENTER_RIGHT;
+      break;
+    case Fl_Instruction::MOVE_UP:
+      last.m_instruction = Fl_Instruction::CENTER_UP;
+      break;
+    case Fl_Instruction::MOVE_DOWN:
+      last.m_instruction = Fl_Instruction::CENTER_DOWN;
+      break;
+    default:
+      throw Fl_Exception("Tried to center a widget that has already been centered or expanded");
+    }
+
+    return *this;
+  }
+
+  Fl_Flow& expand()
+  {
+    Fl_Instruction& last = m_instructions.back();
+
+    switch (last.m_instruction) {
+    case Fl_Instruction::MOVE_LEFT:
+      last.m_instruction = Fl_Instruction::EXPAND_LEFT;
+      break;
+    case Fl_Instruction::MOVE_RIGHT:
+      last.m_instruction = Fl_Instruction::EXPAND_RIGHT;
+      break;
+    case Fl_Instruction::MOVE_UP:
+      last.m_instruction = Fl_Instruction::EXPAND_UP;
+      break;
+    case Fl_Instruction::MOVE_DOWN:
+      last.m_instruction = Fl_Instruction::EXPAND_DOWN;
+      break;
+    default:
+      throw Fl_Exception("Tried to expand a widget that has already been expanded or centered");
+    }
+
+    return *this;
+  }
+
+  Fl_Flow& left(Fl_Widget& _widget)
+  {
+    add(&_widget);
+    add_instruction(&_widget, Fl_Instruction::MOVE_LEFT);
+    return *this;
+  }
+
+  Fl_Flow& left()
+  {
+    return left(*(m_instructions.back().m_widget.widget()));
+    // Fl_Instruction& last = m_instructions.back();
+    // add_instruction(last.m_widget, Fl_Instruction::MOVE_LEFT);
+    // return *this;
+  }
+
+  Fl_Flow& right(Fl_Widget& _widget)
+  {
+    add(&_widget);
+    add_instruction(&_widget, Fl_Instruction::MOVE_RIGHT);
+    return *this;
+  }
+
+  Fl_Flow& right()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    add_instruction(last.m_widget, Fl_Instruction::MOVE_RIGHT);
+    return *this;
+  }
+
+  Fl_Flow& up(Fl_Widget& _widget)
+  {
+    add(&_widget);
+    add_instruction(&_widget, Fl_Instruction::MOVE_UP);
+    return *this;
+  }
+
+  Fl_Flow& up()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    add_instruction(last.m_widget, Fl_Instruction::MOVE_UP);
+    return *this;
+  }
+
+  Fl_Flow& down(Fl_Widget& _widget)
+  {
+    add(&_widget);
+    add_instruction(&_widget, Fl_Instruction::MOVE_DOWN);
+    return *this;
+  }
+
+  Fl_Flow& down()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    add_instruction(last.m_widget, Fl_Instruction::MOVE_DOWN);
+    return *this;
   }
 
   /*
@@ -83,6 +185,14 @@ private:
   std::vector<Fl_State> m_states;
   int m_padding;
   bool m_drawn;
+
+  void add_instruction(Fl_Widget_Tracker _widget, int _instr)
+  {
+    Fl_Instruction instruction;
+    instruction.m_widget = _widget;
+    instruction.m_instruction = _instr;
+    m_instructions.push_back(instruction);
+  }
 
   void process()
   {

@@ -1,6 +1,6 @@
 # Fl_Flow
 
-![](doc/tutorial/logo.png)
+![](/doc/tutorial/logo.png)
 
 ## A fast and fun layout manager for FLTK
 
@@ -37,11 +37,11 @@ int main()
 The program can be compiled as a normal C++ FLTK program using a
 command similar to:
 
-    $ c++ main.cpp -lfltk
+    $ c++ main.cpp `fltk-config --cxxflags` -Iinclude `fltk-config --ldflags`
 
 This would result in a window appearing with the following layout.
 
-![](doc/tutorial/1_button_initial.png)
+![](/doc/tutorial/1_button_initial.png)
 
 You will notice that by default the button will appear at the bottom
 right corner of the window if no positional instructions are given.
@@ -55,25 +55,25 @@ So as the window is resized, these same instructions get rerun and
 the window layout is regenerated (albeit at a different size). For
 now we just move up via the following code:
 
-    flow.rule(button, "^");
+    flow.up(button);
 
-As you may have guessed, directions are given within the rule()
-function via < > ^ v symbols. As the following image demonstrates, the
-button will keep moving upwards until it hits either the edge of the
-window or another positioned Widget.
+As you may have guessed, directions are given by methods with the
+name of the desired direction. As the following image demonstrates,
+the button will keep moving upwards until it hits either the edge
+of the window or another positioned Widget.
 
-![](doc/tutorial/2_button_up.png)
+![](/doc/tutorial/2_button_up.png)
 
 With that in place, we can then instruct the Widget to move to the
 left. Rather than writing multiple statements in C, the command can
-be collapsed as seen in the following code:
+be chained as seen in the following code:
 
-    flow.rule(button, "^<");
+    flow.up(button).left();
 
 So with this, the button will first move all the way to the top
 edge, and then all the way to the left edge as shown in the following:
 
-![](doc/tutorial/3_button_up_left.png)
+![](/doc/tutorial/3_button_up_left.png)
 
 With this in place, we will now create a new Text Box and provide
 it the same instructions to move up and left. This will place it
@@ -84,48 +84,50 @@ flexibility. The code for the Text Box should be as follows.
 
 ```
 Fl_Input text(0, 0, 150, 30);
-flow.rule(text, "^<");
+flow.up(text).left();
 ```
 
 The following image shows the route that the Text Box will take.
 This should also be fairly easy to visualize compared to other
 approaches using many nested grid containers.
 
-![](doc/tutorial/4_text_up_left.png)
+![](/doc/tutorial/4_text_up_left.png)
 
 Next we are going to add a separator widget to close off the top
 row. For this we are going to do something slightly different.
-Instead of moving to the left, we provide an instruction for the
-Widget to expand left. this means it will keep growing towards the
-left until it touches the left edge. After this our usual instruction
-to move upwards is given.
+After moving to the left, we provide an instruction for the Widget to
+expand. This means it will keep growing towards the left until it
+touches the left edge. After this our usual instruction to move
+upwards is given.
 
 ```
 Fl_Box sep(0, 0, 1, 1);
 sep.color(FL_BLACK);
 sep.box(FL_FLAT_BOX);
-flow.rule(sep, "=<^");
+flow.left(sep)
+    .expand()
+    .up();
 ```
 
-So again, you may notice that any directional instruction with a =
-symbol before it will expand in that direction rather than simply
-move. This process is demonstrated by the following image.
+Calling expand() after any directional instruction will cause the
+Widget to expand in that direction rather than simply move. This
+process is demonstrated by the following image.
 
-![](doc/tutorial/5_separator_expand_left_up.png)
+![](/doc/tutorial/5_separator_expand_left_up.png)
 
 Note that the Separator Widget is by default 1x1 pixels in size.
 This allows us to expand it in the vertical direction as well as
 horizontal. The final result of this can be seen in the following
 image.
 
-![](doc/tutorial/6_separator_result.png)
+![](/doc/tutorial/6_separator_result.png)
 
 At this point, our code should be similar to the following:
 
 ```
 #include <FL/Fl_Double_Window.H>
-#include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Box.H>
 
@@ -138,10 +140,12 @@ int main()
   Fl_Box sep(0, 0, 10, 1);
   sep.color(FL_BLACK);
   sep.box(FL_FLAT_BOX);
- 
-  flow.rule(button, "^<");
-  flow.rule(text, "^<");
-  flow.rule(sep, "=<^");
+
+  flow.up(button).left();
+  flow.up(text).left();
+  flow.left(sep)
+    .expand()
+    .up();
 
   win.resizable(flow);
   win.show();
@@ -166,11 +170,13 @@ Fl_Multiline_Input area(0, 0, 10, 10);
 Fl_Box sep2(0, 0, 10, 1)
 sep2.color(FL_BLACK);
 sep2.box(FL_FLAT_BOX);
-flow.rule(area, "<^");
-flow.rule(sep2, "=<^");
+flow.left(area).up();
+flow.left(sep2)
+  .expand()
+  .up();
 ```
 
-![](doc/tutorial/7_textarea_expand_1.png)
+![](/doc/tutorial/7_textarea_expand_1.png)
 
 Now that we have the Separator and Text Area out of the way
 temporarily, we simply add a Button. Next we move the Separator
@@ -180,19 +186,22 @@ dimensions. These steps are detailed below:
 
 ```
 Fl_Button button2(0, 0, 100, 30, "Button");
-flow.rule(button2, "v");
-flow.rule(sep2, "v");
-flow.rule(area, "=>=v");
+flow.down(button2);
+flow.down(sep2);
+flow.right(area)
+  .expand()
+  .down()
+  .expand();
 ```
 
-![](doc/tutorial/8_textarea_expand_2.png)
+![](/doc/tutorial/8_textarea_expand_2.png)
 
 As you may have noticed, the widget flow instructions can be specified
 multiple times and not only will they append to the current list
 but they will also be in sequence of any instructions on sibling
 Widgets. The final output can be seen in the following.
 
-![](doc/tutorial/9_textarea_expand_result.png)
+![](/doc/tutorial/9_textarea_expand_result.png)
 
 Importantly, all of the Widgets are placed using instructions rather
 than absolute coordinates which means if we later resize the top-level
@@ -200,7 +209,7 @@ window, these instructions are repeated and the UI layout effectively
 scales. For example the layout we have created should scale as
 shown:
 
-![](doc/tutorial/10_resize.png)
+![](/doc/tutorial/10_resize.png)
 
 Finally a complete listing of the code required to create a program
 that provides this layout. This should be considerably simpler when
@@ -208,8 +217,8 @@ compared with other UI systems.
 
 ```
 #include <FL/Fl_Double_Window.H>
-#include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Multiline_Input.H>
@@ -229,14 +238,23 @@ int main()
   sep2.color(FL_BLACK);
   sep2.box(FL_FLAT_BOX);
 
-  flow.rule(button, "^<");
-  flow.rule(text, "^<");
-  flow.rule(sep, "=<^");
-  flow.rule(area, "<^");
-  flow.rule(sep2, "=<^");
-  flow.rule(button2, "v");
-  flow.rule(sep2, "v");
-  flow.rule(area, "=>=v");
+  flow.up(button).left();
+  flow.up(text).left();
+  flow.left(sep)
+    .expand()
+    .up();
+
+  flow.left(area).up();
+  flow.left(sep2)
+    .expand()
+    .up();
+
+  flow.down(button2);
+  flow.down(sep2);
+  flow.right(area)
+    .expand()
+    .down()
+    .expand();
 
   win.resizable(flow);
   win.show();
@@ -248,21 +266,23 @@ int main()
 ## Centering widgets
 
 Flow also provides an instruction to center a component within
-available space. For this, you can use the '/' character. For
+available space. For this, you can use the center() method. For
 example, the following will horizontally and vertically center a
 button in the empty space rather than expanding into it.
 
     Fl_Button button(0, 0, 200, 200, "Button");
-    flow.rule(button, "/</^");
+    flow.left(button).center()
+      .up().center();
 
 This will result in the following:
 
-![](doc/tutorial/11_center.png)
+![](/doc/tutorial/11_center.png)
 
 If you only wanted to center it horizontally but make it expand
 vertically instead, then you would need a rule such as this.
 
-    flow.rule(button, "/<=^");
+    flow.left(button).center()
+      .up().expand();
 
 This is very powerful because by only centering in the available
 space, it will take into consideration other components such as
@@ -274,4 +294,3 @@ works. You may have even noticed that we did not actually need the
 Separator Widgets in order to achieve the layout we created. Your
 next step could be to have a look at some of the examples and finally
 to download the library and have a play.
-

@@ -12,8 +12,9 @@ int main()
   side.color(FL_RED);
   side.box(FL_FLAT_BOX);
 
-  flow.left(side).up().expand();
-  flow.left(button).center()
+  flow(side).left()
+    .up().expand();
+  flow(button).left().center()
     .up().center();
 
   win.resizable(flow);

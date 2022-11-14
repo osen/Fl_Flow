@@ -14,10 +14,9 @@ int main()
   sep.color(FL_BLACK);
   sep.box(FL_FLAT_BOX);
 
-  flow.up(button).left();
-  flow.up(text).left();
-  flow.left(sep)
-    .expand()
+  flow(button).up().left();
+  flow(text).up().left();
+  flow(sep).left().expand()
     .up();
 
   win.resizable(flow);

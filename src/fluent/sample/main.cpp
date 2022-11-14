@@ -17,10 +17,10 @@ struct HelloWindow : Fl_Double_Window
     add_resizable(m_flow);
     m_flow.set_padding(10);
 
-    m_flow.up(m_load).left();
-    m_flow.up(m_save).left();
-    m_flow.up(m_close);
-    m_flow.left(m_text).expand()
+    m_flow(m_load).up().left();
+    m_flow(m_save).up().left();
+    m_flow(m_close).up();
+    m_flow(m_text).left().expand()
       .up().expand();
 
     end();

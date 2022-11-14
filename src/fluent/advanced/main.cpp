@@ -20,23 +20,19 @@ int main()
   sep2.color(FL_BLACK);
   sep2.box(FL_FLAT_BOX);
 
-  flow.up(button).left();
-  flow.up(text).left();
-  flow.left(sep)
-    .expand()
+  flow(button).up().left();
+  flow(text).up().left();
+  flow(sep).left().expand()
     .up();
 
-  flow.left(area).up();
-  flow.left(sep2)
-    .expand()
+  flow(area).left().up();
+  flow(sep2).left().expand()
     .up();
 
-  flow.down(button2);
-  flow.down(sep2);
-  flow.right(area)
-    .expand()
-    .down()
-    .expand();
+  flow(button2).down();
+  flow(sep2).down();
+  flow(area).right().expand()
+    .down().expand();
 
   win.resizable(flow);
   win.show();

@@ -55,7 +55,7 @@ So as the window is resized, these same instructions get rerun and
 the window layout is regenerated (albeit at a different size). For
 now we just move up via the following code:
 
-    flow.up(button);
+    flow(button).up();
 
 As you may have guessed, directions are given by methods with the
 name of the desired direction. As the following image demonstrates,
@@ -68,7 +68,7 @@ With that in place, we can then instruct the Widget to move to the
 left. Rather than writing multiple statements in C, the command can
 be chained as seen in the following code:
 
-    flow.up(button).left();
+    flow(button).up().left();
 
 So with this, the button will first move all the way to the top
 edge, and then all the way to the left edge as shown in the following:
@@ -84,7 +84,7 @@ flexibility. The code for the Text Box should be as follows.
 
 ```
 Fl_Input text(0, 0, 150, 30);
-flow.up(text).left();
+flow(text).up().left();
 ```
 
 The following image shows the route that the Text Box will take.
@@ -104,9 +104,8 @@ upwards is given.
 Fl_Box sep(0, 0, 1, 1);
 sep.color(FL_BLACK);
 sep.box(FL_FLAT_BOX);
-flow.left(sep)
-    .expand()
-    .up();
+flow(sep).left().expand()
+  .up();
 ```
 
 Calling expand() after any directional instruction will cause the
@@ -141,10 +140,9 @@ int main()
   sep.color(FL_BLACK);
   sep.box(FL_FLAT_BOX);
 
-  flow.up(button).left();
-  flow.up(text).left();
-  flow.left(sep)
-    .expand()
+  flow(button).up().left();
+  flow(text).up().left();
+  flow(sep).left().expand()
     .up();
 
   win.resizable(flow);
@@ -170,9 +168,8 @@ Fl_Multiline_Input area(0, 0, 10, 10);
 Fl_Box sep2(0, 0, 10, 1)
 sep2.color(FL_BLACK);
 sep2.box(FL_FLAT_BOX);
-flow.left(area).up();
-flow.left(sep2)
-  .expand()
+flow(area).left().up();
+flow(sep2).left().expand()
   .up();
 ```
 
@@ -186,12 +183,10 @@ dimensions. These steps are detailed below:
 
 ```
 Fl_Button button2(0, 0, 100, 30, "Button");
-flow.down(button2);
-flow.down(sep2);
-flow.right(area)
-  .expand()
-  .down()
-  .expand();
+flow(button2).down();
+flow(sep2).down();
+flow(area).right().expand()
+  .down().expand();
 ```
 
 ![](/doc/tutorial/8_textarea_expand_2.png)
@@ -238,23 +233,19 @@ int main()
   sep2.color(FL_BLACK);
   sep2.box(FL_FLAT_BOX);
 
-  flow.up(button).left();
-  flow.up(text).left();
-  flow.left(sep)
-    .expand()
+  flow(button).up().left();
+  flow(text).up().left();
+  flow(sep).left().expand()
     .up();
 
-  flow.left(area).up();
-  flow.left(sep2)
-    .expand()
+  flow(area).left().up();
+  flow(sep2).left().expand()
     .up();
 
-  flow.down(button2);
-  flow.down(sep2);
-  flow.right(area)
-    .expand()
-    .down()
-    .expand();
+  flow(button2).down();
+  flow(sep2).down();
+  flow(area).right().expand()
+    .down().expand();
 
   win.resizable(flow);
   win.show();
@@ -271,7 +262,7 @@ example, the following will horizontally and vertically center a
 button in the empty space rather than expanding into it.
 
     Fl_Button button(0, 0, 200, 200, "Button");
-    flow.left(button).center()
+    flow(button).left().center()
       .up().center();
 
 This will result in the following:
@@ -281,7 +272,7 @@ This will result in the following:
 If you only wanted to center it horizontally but make it expand
 vertically instead, then you would need a rule such as this.
 
-    flow.left(button).center()
+    flow(button).left().center()
       .up().expand();
 
 This is very powerful because by only centering in the available

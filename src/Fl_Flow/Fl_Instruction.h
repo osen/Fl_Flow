@@ -51,6 +51,12 @@ struct Fl_Instruction
 
   Fl_Instruction() : m_widget(0), m_instruction() { }
 
+  Fl_Instruction(Fl_Widget& widget, int instr)
+    : m_widget(&widget), m_instruction(instr) {}
+
+  Fl_Instruction(Fl_Widget_Tracker& widget, int instr)
+    : m_widget(widget), m_instruction(instr) {}
+
   int x_direction()
   {
     if(m_instruction == MOVE_LEFT ||

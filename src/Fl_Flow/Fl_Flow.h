@@ -46,12 +46,101 @@ struct Fl_Flow : Fl_Group
         continue;
       }
 
-      Fl_Instruction instruction;
-      instruction.m_widget = _widget;
-      instruction.m_instruction = Fl_Instruction::decode(c, type);
+      m_instructions.push_back(Fl_Instruction(_widget, Fl_Instruction::decode(c, type)));
       type = Fl_Instruction::NONE;
-      m_instructions.push_back(instruction);
     }
+  }
+
+  Fl_Flow& layout(Fl_Widget& _widget)
+  {
+    add(&_widget);
+    m_instructions.push_back(Fl_Instruction(_widget, Fl_Instruction::NONE));
+    return *this;
+  }
+
+  Fl_Flow& operator()(Fl_Widget& _widget)
+  {
+    return layout(_widget);
+  }
+
+  Fl_Flow& center()
+  {
+    Fl_Instruction& last = m_instructions.back();
+
+    switch (last.m_instruction) {
+    case Fl_Instruction::NONE:
+      throw Fl_Exception("No direction for centering");
+    case Fl_Instruction::MOVE_LEFT:
+      last.m_instruction = Fl_Instruction::CENTER_LEFT;
+      break;
+    case Fl_Instruction::MOVE_RIGHT:
+      last.m_instruction = Fl_Instruction::CENTER_RIGHT;
+      break;
+    case Fl_Instruction::MOVE_UP:
+      last.m_instruction = Fl_Instruction::CENTER_UP;
+      break;
+    case Fl_Instruction::MOVE_DOWN:
+      last.m_instruction = Fl_Instruction::CENTER_DOWN;
+      break;
+    default:
+      throw Fl_Exception("Tried to center a widget that has already been centered or expanded");
+    }
+
+    return *this;
+  }
+
+  Fl_Flow& expand()
+  {
+    Fl_Instruction& last = m_instructions.back();
+
+    switch (last.m_instruction) {
+    case Fl_Instruction::NONE:
+      throw Fl_Exception("No direction for expanding");
+    case Fl_Instruction::MOVE_LEFT:
+      last.m_instruction = Fl_Instruction::EXPAND_LEFT;
+      break;
+    case Fl_Instruction::MOVE_RIGHT:
+      last.m_instruction = Fl_Instruction::EXPAND_RIGHT;
+      break;
+    case Fl_Instruction::MOVE_UP:
+      last.m_instruction = Fl_Instruction::EXPAND_UP;
+      break;
+    case Fl_Instruction::MOVE_DOWN:
+      last.m_instruction = Fl_Instruction::EXPAND_DOWN;
+      break;
+    default:
+      throw Fl_Exception("Tried to expand a widget that has already been expanded or centered");
+    }
+
+    return *this;
+  }
+
+  Fl_Flow& left()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    m_instructions.push_back(Fl_Instruction(last.m_widget, Fl_Instruction::MOVE_LEFT));
+    return *this;
+  }
+
+  Fl_Flow& right()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    m_instructions.push_back(Fl_Instruction(last.m_widget, Fl_Instruction::MOVE_RIGHT));
+    return *this;
+  }
+
+  Fl_Flow& up()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    m_instructions.push_back(Fl_Instruction(last.m_widget, Fl_Instruction::MOVE_UP));
+    return *this;
+  }
+
+  Fl_Flow& down()
+  {
+    Fl_Instruction& last = m_instructions.back();
+    m_instructions.push_back(Fl_Instruction(last.m_widget, Fl_Instruction::MOVE_DOWN));
+    return *this;
   }
 
   /*

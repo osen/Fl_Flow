@@ -12,6 +12,7 @@ CXX=c++
 
 all:
 	mkdir -p include/FL
+	mkdir fluent
 
 	echo "#ifndef FL_FL_FLOW_H" > include/FL/Fl_Flow.H
 	echo "#define FL_FL_FLOW_H" >> include/FL/Fl_Flow.H
@@ -23,9 +24,15 @@ all:
 	$(CXX) -ocenter $(CXXFLAGS) -Iinclude src/center/*.cpp $(LDFLAGS)
 	$(CXX) -oadvanced $(CXXFLAGS) -Iinclude src/advanced/*.cpp $(LDFLAGS)
 
+	$(CXX) -ofluent/sample $(CXXFLAGS) -Iinclude src/fluent/sample/*.cpp $(LDFLAGS)
+	$(CXX) -ofluent/tutorial $(CXXFLAGS) -Iinclude src/fluent/tutorial/*.cpp $(LDFLAGS)
+	$(CXX) -ofluent/center $(CXXFLAGS) -Iinclude src/fluent/center/*.cpp $(LDFLAGS)
+	$(CXX) -ofluent/advanced $(CXXFLAGS) -Iinclude src/fluent/advanced/*.cpp $(LDFLAGS)
+
 clean:
 	rm -f sample
 	rm -f tutorial
 	rm -f center
 	rm -f advanced
 	rm -r -f include
+	rm -r -f fluent

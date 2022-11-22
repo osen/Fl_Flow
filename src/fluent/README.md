@@ -285,3 +285,17 @@ works. You may have even noticed that we did not actually need the
 Separator Widgets in order to achieve the layout we created. Your
 next step could be to have a look at some of the examples and finally
 to download the library and have a play.
+
+## Access through a pointer
+
+Fluent layout through a pointer can be a little awkward using the
+parenthesis operator.
+
+    Fl_Flow* flow = new Fl_Flow(0, 0, win.w(), win.h());
+    (*flow)(sep2).right().expand()
+      .up();
+
+Use the layout() method instead in these circumstances.
+
+    flow->layout(sep2).right().expand()
+      .up();

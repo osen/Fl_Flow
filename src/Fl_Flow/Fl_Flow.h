@@ -51,11 +51,16 @@ struct Fl_Flow : Fl_Group
     }
   }
 
-  Fl_Flow& operator()(Fl_Widget& _widget)
+  Fl_Flow& layout(Fl_Widget& _widget)
   {
     add(&_widget);
     m_instructions.push_back(Fl_Instruction(_widget, Fl_Instruction::NONE));
     return *this;
+  }
+
+  Fl_Flow& operator()(Fl_Widget& _widget)
+  {
+    return layout(_widget);
   }
 
   Fl_Flow& center()

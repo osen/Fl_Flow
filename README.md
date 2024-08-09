@@ -17,7 +17,7 @@ it provides. The first step is to create a minimal program displaying
 a single window with a button. This can be done using the following
 code:
 
-```
+```cpp
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
@@ -82,7 +82,7 @@ instructions and move it left first and then up, it will result in
 being placed under the original button. This provides useful
 flexibility. The code for the Text Box should be as follows.
 
-```
+```cpp
 Fl_Input text(0, 0, 150, 30);
 flow.rule(text, "^<");
 ```
@@ -100,7 +100,7 @@ Widget to expand left. this means it will keep growing towards the
 left until it touches the left edge. After this our usual instruction
 to move upwards is given.
 
-```
+```cpp
 Fl_Box sep(0, 0, 1, 1);
 sep.color(FL_BLACK);
 sep.box(FL_FLAT_BOX);
@@ -122,7 +122,7 @@ image.
 
 At this point, our code should be similar to the following:
 
-```
+```cpp
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
@@ -161,7 +161,7 @@ we will use this to section off some button widgets but for now
 lets expand it horizontally and move it upwards. These tasks can
 be seen in the following code and subsequent image:
 
-```
+```cpp
 Fl_Multiline_Input area(0, 0, 10, 10);
 Fl_Box sep2(0, 0, 10, 1)
 sep2.color(FL_BLACK);
@@ -178,7 +178,7 @@ down to rest ontop of the newly placed button. Finally with everything
 else in the correct positions, we expand the Text Area in both
 dimensions. These steps are detailed below:
 
-```
+```cpp
 Fl_Button button2(0, 0, 100, 30, "Button");
 flow.rule(button2, "v");
 flow.rule(sep2, "v");
@@ -206,7 +206,7 @@ Finally a complete listing of the code required to create a program
 that provides this layout. This should be considerably simpler when
 compared with other UI systems.
 
-```
+```cpp
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Flow.H>
